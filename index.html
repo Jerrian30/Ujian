@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>SAJ Informatika SMPN 4</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+h1{
+    text-align:center;
+}
+
+input[type=text]{
+    width:100%;
+    padding:12px;
+    margin-bottom:20px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+.soal{
+    margin-bottom:30px;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+.level{
+    color:#1976d2;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.pilihan{
+    display:block;
+    padding:12px;
+    margin:5px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.pilihan:hover{
+    background:#e3f2fd;
+}
+
+input[type=radio]{
+    display:none;
+}
+
+input[type=radio]:checked + label{
+    background:#bbdefb;
+    border:2px solid #2196f3;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    font-size:18px;
+    background:#2196f3;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1976d2;
+}
+
+#hasil{
+    margin-top:20px;
+    padding:20px;
+    border-radius:10px;
+    background:#e8f5e9;
+}
+
+.salah{
+    color:red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Simulasi SAJ Informatika SMPN 4</h1>
+
+<input type="text" id="nama" placeholder="Masukkan Nama Anda">
+
+<form id="quizForm"></form>
+
+<button onclick="koreksi()">Kumpulkan Jawaban</button>
+
+<div id="hasil"></div>
+
+</div>
+
+<script>
+
+// GANTI DENGAN URL WEB APP GOOGLE SCRIPT
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbxpN9876NZvS8N3L0GA8lALkyGZ6Ift8RS3xa_3S5Y-Il0TxYTa32Q6DSVhswwXXQHV/exec";
+
+const soal = [
+
+{
+level:"C2",
+t:"Peserta didik dapat menentukan prinsip berpikir komputasional saat membagi masalah besar menjadi bagian kecil.",
+o:[
+"Abstraksi",
+"Pengenalan Pola",
+"Dekomposisi",
+"Algoritma"
+],
+a:"C"
+},
+
+{
+level:"C3",
+t:"Peserta didik diminta memilih data yang paling penting untuk menyelesaikan masalah pengelolaan perpustakaan digital sekolah. Tindakan tersebut merupakan penerapan konsep...",
+o:[
+"Abstraksi",
+"Dekomposisi",
+"Algoritma",
+"Looping"
+],
+a:"A"
+},
+
+{
+level:"C4",
+t:"Peserta didik menganalisis pola kenaikan jumlah pengunjung website sekolah setiap bulan dan menentukan strategi promosi berdasarkan pola tersebut. Konsep berpikir komputasional yang digunakan adalah...",
+o:[
+"Abstraksi",
+"Dekomposisi",
+"Pengenalan Pola",
+"Debugging"
+],
+a:"C"
+},
+
+{
+level:"C2",
+t:"Pada struktur data tree, istilah untuk node paling atas yang menjadi awal percabangan disebut...",
+o:[
+"Leaf",
+"Root",
+"Branch",
+"Edge"
+],
+a:"B"
+},
+
+{
+level:"C4",
+t:"Seekor robot bergerak 3 langkah ke kanan, kemudian 2 langkah ke atas, lalu 1 langkah ke kiri. Posisi akhir robot dibanding posisi awal adalah...",
+o:[
+"2 langkah ke kanan dan 2 langkah ke atas",
+"1 langkah ke kanan dan 1 langkah ke atas",
+"2 langkah ke kiri dan 2 langkah ke bawah",
+"3 langkah ke kanan dan 1 langkah ke atas"
+],
+a:"A"
+},
+
+{
+level:"C4",
+t:"Dalam suatu graf jaringan sosial, Andi terhubung dengan Budi dan Citra, sedangkan Budi juga terhubung dengan Deni. Hubungan yang paling tepat adalah...",
+o:[
+"Andi memiliki dua node tetangga",
+"Budi tidak memiliki hubungan",
+"Citra terhubung langsung dengan Deni",
+"Deni adalah root node"
+],
+a:"A"
+},
+
+{
+level:"C2",
+t:"Fungsi utama algoritma dalam pemecahan masalah adalah...",
+o:[
+"Membuat komputer menjadi lebih berat",
+"Menyusun langkah-langkah penyelesaian secara sistematis",
+"Menghapus semua data",
+"Menambah kapasitas RAM"
+],
+a:"B"
+},
+
+{
+level:"C1",
+t:"Perangkat keras yang termasuk perangkat keluaran (output device) adalah...",
+o:[
+"Keyboard",
+"Mouse",
+"Monitor",
+"Scanner"
+],
+a:"C"
+},
+
+{
+level:"C1",
+t:"Media penyimpanan optik yang memiliki kapasitas penyimpanan lebih besar dibanding DVD adalah...",
+o:[
+"CD",
+"Flashdisk",
+"Blu-ray Disc",
+"Disket"
+],
+a:"C"
+},
+
+{
+level:"C5",
+t:"Sekolah akan menerapkan sistem absensi digital. Hal yang paling penting untuk dievaluasi agar sistem berjalan baik adalah...",
+o:[
+"Warna komputer di laboratorium",
+"Kesiapan hardware, software, dan brainware",
+"Jumlah kursi di kelas",
+"Ukuran meja operator"
+],
+a:"B"
+},
+
+{
+level:"C5",
+t:"Sebuah sekolah ingin membuat proyek digital pembelajaran daring. Proyek yang paling sesuai adalah...",
+o:[
+"Membangun aplikasi LMS sekolah",
+"Mengganti warna tembok kelas",
+"Membeli papan tulis baru",
+"Mencetak lebih banyak buku tulis"
+],
+a:"A"
+},
+
+{
+level:"C2",
+t:"Fungsi utama CPU pada sistem komputer adalah...",
+o:[
+"Menyimpan file permanen",
+"Mengolah data dan menjalankan instruksi",
+"Mencetak dokumen",
+"Menampilkan gambar"
+],
+a:"B"
+},
+
+{
+level:"C4",
+t:"Sebuah komputer memiliki RAM kecil tetapi membuka banyak aplikasi berat secara bersamaan. Penyebab utama bottleneck komputer tersebut adalah...",
+o:[
+"Mouse terlalu sensitif",
+"Kapasitas RAM tidak mencukupi",
+"Monitor terlalu besar",
+"Keyboard rusak"
+],
+a:"B"
+},
+
+{
+level:"C2",
+t:"Struktur data adalah...",
+o:[
+"Cara menyusun dan mengelola data agar mudah digunakan",
+"Perangkat keras tambahan",
+"Sistem operasi komputer",
+"Bahasa pemrograman"
+],
+a:"A"
+},
+
+{
+level:"C3",
+t:"Untuk mencari nilai terbesar dari sekumpulan data angka secara cepat, metode yang paling tepat adalah...",
+o:[
+"Membandingkan setiap nilai satu per satu",
+"Menghapus semua data",
+"Mencetak data",
+"Mematikan komputer"
+],
+a:"A"
+},
+
+{
+level:"C4",
+t:"Seorang pengguna lansia mengalami kesulitan membaca tulisan kecil pada layar komputer. Solusi yang paling tepat adalah...",
+o:[
+"Memperkecil ukuran font",
+"Meningkatkan ukuran tampilan dan menggunakan mode aksesibilitas",
+"Menghapus aplikasi",
+"Mengurangi cahaya monitor hingga minimum"
+],
+a:"B"
+},
+
+{
+level:"C5",
+t:"Penambahan RAM pada komputer umumnya dapat meningkatkan performa karena...",
+o:[
+"Memperbesar ukuran monitor",
+"Membantu proses multitasking lebih lancar",
+"Mengubah sistem operasi",
+"Mengurangi kapasitas penyimpanan"
+],
+a:"B"
+},
+
+{
+level:"C3",
+t:"Jaringan komputer yang digunakan dalam area sekolah termasuk jenis jaringan...",
+o:[
+"WAN",
+"MAN",
+"LAN",
+"PAN"
+],
+a:"C"
+},
+
+{
+level:"C4",
+t:"Jenis jaringan yang paling aman digunakan untuk sistem ATM bank adalah...",
+o:[
+"Jaringan publik tanpa keamanan",
+"Jaringan pribadi dengan firewall dan enkripsi",
+"Hotspot umum",
+"Bluetooth"
+],
+a:"B"
+},
+
+{
+level:"C3",
+t:"Perbedaan utama intranet dan extranet adalah...",
+o:[
+"Extranet dapat diakses pihak luar tertentu",
+"Intranet menggunakan internet satelit",
+"Extranet hanya digunakan di rumah",
+"Intranet selalu menggunakan WiFi"
+],
+a:"A"
+},
+{
+level:"C4",
+t:"Pada topologi jaringan ring, apabila satu komputer mengalami kerusakan pada kabel utama, dampak yang paling mungkin terjadi adalah...",
+o:[
+"Seluruh jaringan dapat terganggu",
+"Kecepatan printer meningkat",
+"Monitor menjadi mati",
+"Kapasitas RAM bertambah"
+],
+a:"A"
+},
+
+{
+level:"C4",
+t:"Jika terjadi gangguan pada topologi ring, solusi yang paling tepat agar jaringan dapat kembali berjalan adalah...",
+o:[
+"Menghapus sistem operasi",
+"Memutus seluruh kabel jaringan",
+"Memperbaiki atau mengganti titik jaringan yang rusak",
+"Mengurangi jumlah komputer"
+],
+a:"C"
+},
+
+{
+level:"C2",
+t:"Pada Microsoft Excel, fungsi kursor berbentuk tanda tambah hitam kecil di sudut sel digunakan untuk...",
+o:[
+"Menghapus seluruh tabel",
+"Memindahkan worksheet",
+"Melakukan autofill atau menyalin data secara otomatis",
+"Membuka menu print"
+],
+a:"C"
+},
+
+{
+level:"C2",
+t:"Pada Microsoft Excel, ketika rumus disalin ke bawah menggunakan autofill, referensi sel akan berubah secara otomatis karena menggunakan...",
+o:[
+"Absolute reference",
+"Relative reference",
+"Format painter",
+"Conditional formatting"
+],
+a:"B"
+},
+
+{
+level:"C2",
+t:"Aplikasi yang paling tepat digunakan untuk membuat tabel data dan melakukan perhitungan otomatis adalah...",
+o:[
+"Microsoft Paint",
+"Microsoft Excel",
+"Microsoft WordPad",
+"Windows Media Player"
+],
+a:"B"
+},
+
+{
+level:"C1",
+t:"Menu pada Microsoft PowerPoint yang digunakan untuk menambahkan slide baru adalah...",
+o:[
+"Insert",
+"Review",
+"Mailings",
+"Formula"
+],
+a:"A"
+},
+
+{
+level:"C2",
+t:"Ikon bergambar gunting pada Microsoft PowerPoint memiliki fungsi untuk...",
+o:[
+"Menempelkan objek",
+"Menghapus slide",
+"Memotong teks atau objek",
+"Menyimpan file"
+],
+a:"C"
+},
+
+{
+level:"C2",
+t:"Menu pada Microsoft PowerPoint yang digunakan untuk memberikan efek gerak pada objek adalah...",
+o:[
+"Transitions",
+"Animations",
+"Insert",
+"Review"
+],
+a:"B"
+},
+
+{
+level:"C2",
+t:"Menu pada Microsoft Word yang digunakan untuk menyisipkan tabel ke dalam dokumen adalah...",
+o:[
+"Home",
+"Insert",
+"Design",
+"Layout"
+],
+a:"B"
+},
+
+{
+level:"C2",
+t:"Perbedaan utama antara Microsoft Word dan Microsoft PowerPoint adalah...",
+o:[
+"Microsoft Word digunakan untuk pengolah kata sedangkan Microsoft PowerPoint digunakan untuk presentasi",
+"Microsoft Word digunakan untuk membuat video",
+"Microsoft PowerPoint digunakan untuk sistem operasi",
+"Keduanya hanya digunakan untuk menggambar"
+],
+a:"A"
+},
+
+{
+level:"C1",
+t:"Menu yang umum terdapat pada Microsoft Word, Microsoft Excel, dan Microsoft PowerPoint adalah...",
+o:[
+"Home",
+"Mail Merge",
+"Formula",
+"Slide Show"
+],
+a:"A"
+},
+
+{
+level:"C2",
+t:"Fungsi utama blog di internet adalah...",
+o:[
+"Menyimpan perangkat keras",
+"Menghapus jaringan komputer",
+"Media berbagi informasi atau tulisan secara online",
+"Meningkatkan kapasitas RAM"
+],
+a:"C"
+},
+
+{
+level:"C3",
+t:"Untuk mengubah jenis huruf, ukuran huruf, dan warna teks pada Microsoft Word, submenu yang paling tepat digunakan adalah...",
+o:[
+"Clipboard",
+"Font",
+"Paragraph",
+"Illustrations"
+],
+a:"B"
+},
+
+{
+level:"C2",
+t:"Aplikasi yang paling tepat digunakan untuk membuat dokumen teks yang dapat disisipkan gambar dan multimedia adalah...",
+o:[
+"Microsoft Word",
+"Calculator",
+"Notepad",
+"Paint"
+],
+a:"A"
+},
+
+{
+level:"C2",
+t:"Aplikasi yang digunakan untuk mengolah data angka, membuat tabel, dan grafik adalah...",
+o:[
+"Microsoft Excel",
+"Microsoft Word",
+"CorelDraw",
+"Photoshop"
+],
+a:"A"
+},
+
+{
+level:"C4",
+t:"Sebuah aplikasi memiliki fitur pengolahan angka otomatis, pembuatan grafik, dan penggunaan rumus matematika. Berdasarkan ciri tersebut, aplikasi tersebut termasuk kategori...",
+o:[
+"Word processor",
+"Spreadsheet",
+"Browser",
+"Editor video"
+],
+a:"B"
+},
+
+{
+level:"C5",
+t:"Seseorang sering mengunggah komentar negatif di media sosial dan ternyata hal tersebut diketahui oleh pihak sekolah saat seleksi organisasi. Dampak jejak digital yang paling tepat adalah...",
+o:[
+"Jejak digital tidak memiliki pengaruh apa pun",
+"Aktivitas digital dapat memengaruhi reputasi seseorang",
+"Semua data internet otomatis terhapus",
+"Komentar media sosial hanya bisa dilihat teman dekat"
+],
+a:"B"
+},
+
+{
+level:"C5",
+t:"Seorang siswa menerima ancaman digital berupa penyebaran data pribadi di internet. Tindakan yang paling tepat adalah...",
+o:[
+"Menyebarkan ancaman tersebut kepada semua teman",
+"Melawan pelaku dengan ancaman baru",
+"Melaporkan kejadian kepada pihak terpercaya dan menyimpan bukti digital",
+"Menghapus semua akun tanpa memberi tahu siapa pun"
+],
+a:"C"
+},
+
+{
+level:"C6",
+t:"Sebuah sekolah ingin membuat kampanye digital anti-cyberbullying. Strategi yang paling efektif adalah...",
+o:[
+"Membiarkan siswa mencari solusi sendiri",
+"Membuat poster edukasi digital, seminar, dan pelaporan anonim",
+"Menghapus seluruh media sosial siswa",
+"Melarang penggunaan internet di sekolah"
+],
+a:"B"
+},
+
+{
+level:"C6",
+t:"Seorang siswa menjadi korban cyberbullying berkepanjangan hingga mengalami penurunan kesehatan mental. Intervensi paling komprehensif yang dapat dilakukan sekolah adalah...",
+o:[
+"Mengabaikan masalah karena terjadi di internet",
+"Memberikan dukungan konseling, melibatkan orang tua, dan melakukan edukasi digital kepada siswa",
+"Menyuruh korban pindah sekolah",
+"Melarang seluruh siswa menggunakan komputer"
+],
+a:"B"
+}
+
+];
+
+const form = document.getElementById("quizForm");
+
+soal.forEach((s,i)=>{
+
+let html = `
+<div class="soal">
+
+<div class="level">
+Level Kognitif: ${s.level}
+</div>
+
+<p>
+${i+1}. ${s.t}
+</p>
+`;
+
+s.o.forEach((opt,j)=>{
+
+let huruf = String.fromCharCode(65+j);
+
+html += `
+<input type="radio" name="q${i}" id="q${i}${huruf}" value="${huruf}">
+<label class="pilihan" for="q${i}${huruf}">
+${huruf}. ${opt}
+</label>
+`;
+
+});
+
+html += `</div>`;
+
+form.innerHTML += html;
+
+});
+
+function koreksi(){
+
+let nama = document.getElementById("nama").value;
+
+if(nama==""){
+alert("Nama wajib diisi!");
+return;
+}
+
+let skor = 0;
+let salah = [];
+
+let levelBenar = {
+C1:0,
+C2:0,
+C3:0,
+C4:0,
+C5:0,
+C6:0
+};
+
+soal.forEach((s,i)=>{
+
+let pilih = document.querySelector(`input[name="q${i}"]:checked`);
+
+if(pilih){
+
+if(pilih.value==s.a){
+
+skor++;
+
+levelBenar[s.level]++;
+
+}else{
+
+salah.push(`Soal ${i+1} (Jawaban benar: ${s.a})`);
+
+}
+
+}else{
+
+salah.push(`Soal ${i+1} belum dijawab (Jawaban benar: ${s.a})`);
+
+}
+
+});
+
+let levelDominan = Object.keys(levelBenar).reduce((a,b)=>
+levelBenar[a] > levelBenar[b] ? a : b
+);
+
+// KIRIM KE SPREADSHEET
+fetch(URL_SCRIPT,{
+method:"POST",
+body:JSON.stringify({
+nama:nama,
+nilai:skor,
+level:levelDominan
+})
+});
+
+document.getElementById("hasil").innerHTML = `
+<h2>Hasil Ujian</h2>
+
+<p><b>Nama:</b> ${nama}</p>
+
+<p><b>Nilai:</b> ${skor} / ${soal.length}</p>
+
+<p><b>Level Kognitif Dominan:</b> ${levelDominan}</p>
+
+<div class="salah">
+${salah.join("<br>")}
+</div>
+`;
+
+}
+</script>
+
+</body>
+</html>
